@@ -19,7 +19,15 @@ help4j.fetch = function (className) {
       return repo.name === className;
     }) || repos.result[0];
 
-    return repoBestMatch.jars[0].jarVersions[0].linkurl; //TODO versions match etc // TODO types
+    let repoPath;
+
+    try {
+      repoPath = repoBestMatch.jars[0].jarVersions[0].linkurl;  //TODO versions match etc // TODO types
+    } catch (e) {
+      console.warn(e);
+    }
+
+    return repoPath;
   });
 
   return linkPromise;

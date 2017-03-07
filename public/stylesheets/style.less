@@ -24,10 +24,23 @@ body {
 
   .licenses-container {
     margin-top: 8px;
+    border: 0.5px solid black;
 
-    .row>div {
-      padding: 8px;
-      border: 1px solid black;
+    header {
+      font-size: 1.2em;
+      text-align: center;
+    }
+
+    .row {
+      display: flex;
+      flex-wrap: wrap;
+
+      > [class*='col-'] {
+        display: flex;
+        flex-direction: column;
+        padding: 8px;
+        border: 0.5px solid black;
+      }
     }
   }
 }

@@ -3,9 +3,11 @@ let router = express.Router();
 
 let Promise = require('bluebird');
 let licenseExtractor = require('../licenseExtractors/grepcode'); // Hardcoded for now
+let cache = require('../cache/nedb');
 
 const apiConfig = {
   path: '../searchApis',
+  concurrency: 8,
   apis: {
     help4j: {
       // Some settings
@@ -63,13 +65,23 @@ function fetchLicenses (filesList) {
       // The interface between fetching class origin and getting its license is
       // actually not very well thought through. Point of improvement!
 
-      return apiHandler
+      return cache
         .fetch(file.className)
-        .then(licenseExtractor.extractByRepoPath)
+        .catch(function () { //cache miss
+          apiHandler
+            .fetch(file.className)
+            .then(licenseExtractor.extractByRepoPath)
+            .then(function (license) {
+              cache.put({ className: file.className, license });
+              return license;
+            });
+
+          return { status: 'pending' };
+        })
         .then(function (license) {
           return { path: file.filePath, 'class': file.className, license: license };
         });
-    });
+    }, { concurrency: apiConfig.concurrency });
     
     return licensesPromise;
   }

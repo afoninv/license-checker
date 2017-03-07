@@ -9,6 +9,10 @@ const settings = {
 
 grepcode.extractByRepoPath = function (repoPath) {
 
+  if (!repoPath) {
+    return {};
+  }
+
   let licensePromise = request({
     method: 'GET',
     uri: settings.fetchUri + repoPath

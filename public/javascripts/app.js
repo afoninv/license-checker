@@ -1,5 +1,9 @@
 'use strict';
 
+const config = {
+  loadExtraTimeout: 3000
+};
+
 class FilesArea extends React.Component {
   render() {
     return <textarea value={this.props.filesRaw} onChange={this.props.changeFiles}/>;
@@ -16,7 +20,13 @@ class Licenses extends React.Component {
             {file.path}
           </div>
           <div className='col-md-6'>
-            <a href={file.license.link}>{file.license.title || 'N/A'}</a>
+            {file.license.status === 'pending' ? (
+              <span>Pending...</span>
+            ) : file.license.link ? (
+              <a href={file.license.link}>{file.license.title || file.license.link}</a>
+            ) : (
+              <span>{file.license.title || 'N/A'}</span>
+            )}
           </div>
         </div>
       );
@@ -32,14 +42,14 @@ class Licenses extends React.Component {
 
     return (
       <div className='licenses-container container-fluid'>
-        <div className='row'>
+        <header className='row'>
           <div className='col-md-6'>
             Java filename
           </div>
           <div className='col-md-6'>
             License status
           </div>
-        </div>
+        </header>
         { rows }
       </div>
     );
@@ -53,6 +63,7 @@ class App extends React.Component {
     this.changeFiles = this.changeFiles.bind(this);
     this.toggleTabs = this.toggleTabs.bind(this);
     this.getLicensesFromServer = this.getLicensesFromServer.bind(this);
+    this.loadExtra = this.loadExtra.bind(this);
 
     this.state = {
       filesRaw: '',
@@ -93,7 +104,9 @@ class App extends React.Component {
   }
 
   getLicensesFromServer() {
-    this.setState({ spinner: true }, () => {
+    window.clearTimeout(this.state.loadingExtra);
+
+    this.setState({ spinner: true, loadingExtra: null }, () => {
       window.fetch('/filenames/', {
         method: 'POST',
         headers: {
@@ -104,8 +117,52 @@ class App extends React.Component {
       }).then((res) => {
         return res.json();
       }).then((data) => {
-        this.setState({ spinner: false, serverResponse: data });
+        let loadingExtra = null;
+
+        if (data.some((file) => {
+          return file.license.status === 'pending';
+        })) {
+          loadingExtra = window.setTimeout(this.loadExtra.bind(this), config.loadExtraTimeout);
+        };
+
+        this.setState({ spinner: false, serverResponse: data, loadingExtra });
       });
+    });
+  }
+
+  loadExtra() {
+    let pendingFiles = this.state.serverResponse
+      .filter(function (file) {
+        return file.license.status === 'pending';
+      })
+      .map(function (file) {
+        return file.path;
+      });
+    if (!pendingFiles.length) {
+      return;
+    }
+
+    window.fetch('/filenames/', {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(pendingFiles)
+    }).then((res) => {
+      return res.json();
+    }).then((data) => {
+      let loadingExtra = null;
+
+      if (data.some((file) => {
+        return file.license.status === 'pending';
+      })) {
+        loadingExtra = window.setTimeout(this.loadExtra.bind(this), config.loadExtraTimeout);
+      };
+
+      let newData = _.unionBy(data,  this.state.serverResponse, 'path');
+
+      this.setState({ serverResponse: newData, loadingExtra });
     });
   }
 
