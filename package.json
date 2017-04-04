@@ -7,23 +7,24 @@
     "test": "nodejs ./node_modules/.bin/mocha"
   },
   "dependencies": {
-    "bluebird": "^3.5.0",
+    "bluebird": "~3.5.0",
     "body-parser": "~1.16.0",
-    "cheerio": "^0.22.0",
+    "cheerio": "~0.22.0",
     "cookie-parser": "~1.4.3",
     "debug": "~2.6.0",
     "express": "~4.14.1",
     "hbs": "~4.0.1",
     "less-middleware": "~2.2.0",
     "morgan": "~1.7.0",
-    "nedb": "^1.8.0",
+    "nedb": "~1.8.0",
+    "react-dropzone": "~3.12.2",
     "request": "~2.80.0",
-    "request-promise": "^4.1.1",
+    "request-promise": "~4.1.1",
     "serve-favicon": "~2.3.2"
   },
   "devDependencies": {
-    "mocha": "^3.2.0",
-    "should": "^11.2.1",
-    "supertest": "^3.0.0"
+    "mocha": "~3.2.0",
+    "should": "~11.2.1",
+    "supertest": "~3.0.0"
   }
 }

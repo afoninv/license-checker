@@ -13,11 +13,13 @@ RUN ./nodesource_setup.sh
 RUN apt-get update && apt-get install -y \
   nodejs
 
-ARG TAG="0.1.1"
+ARG TAG="0.2.0"
 RUN git clone --branch=$TAG --depth=1 https://github.com/afoninv/license-checker.git /opt/codifiedsecurity/license-checker
 
 WORKDIR /opt/codifiedsecurity/license-checker
 RUN npm install
+# Workaround until we have working frontend build system
+COPY ["./node_modules/react-dropzone/dist/index.js", "./public/javascripts/"]
 ENTRYPOINT ["npm", "start"]
 
 EXPOSE 3000

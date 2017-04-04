@@ -12,6 +12,11 @@
     <script src="https://unpkg.com/react-dom@15.4.2/dist/react-dom.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.34/browser.js"></script>
 
+    <script>
+      // Workaround to make dropzone work, until we have actual build system for frontend
+      window.react = window.React;
+    </script>
+    <script src="/javascripts/react-dropzone.js"></script>
     <script type="text/babel" src="/javascripts/app.js"></script>
   </head>
   <body>
