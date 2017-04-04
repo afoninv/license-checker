@@ -5,6 +5,7 @@ let db = new Datastore({ filename: './cache/nedb.db', autoload: true });
 db.remove({}, { multi: true }); // Clean on app launch, for test purposes! TODO
 
 let asyncFindOne = Promise.promisify(db.findOne, { context: db });
+let asyncInsert = Promise.promisify(db.insert, { context: db });
 
 let service = {
   fetch: function (className) {
@@ -14,13 +15,15 @@ let service = {
           return Promise.reject('not found');
         }
 
-        return doc.license;
+        return doc;
       })
 
     return cachePromise;
   },
   put: function (doc) {
-    db.insert(doc);
+    let insertPromise = asyncInsert(doc); // So that we don't put a document twice on occasions.
+
+    return insertPromise;
   }
 };
 

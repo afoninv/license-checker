@@ -58,33 +58,31 @@ function fetchLicenses (filesList) {
   // At this point we assume filesList is correct, deduped, contains class names.
   // Do queueing/caching/aggregating here.
 
-  for (let apiName in apiConfig.apis) {
-    let apiHandler = require(`${apiConfig.path}/${apiName}`);
+  let apiName = Object.keys(apiConfig.apis)[0]
 
-    let licensesPromise = Promise.map(filesList, function (file) {
-      // The interface between fetching class origin and getting its license is
-      // actually not very well thought through. Point of improvement!
+  let apiHandler = require(`${apiConfig.path}/${apiName}`);
 
-      return cache
-        .fetch(file.className)
-        .catch(function () { //cache miss
-          apiHandler
-            .fetch(file.className)
-            .then(licenseExtractor.extractByRepoPath)
-            .then(function (license) {
-              cache.put({ className: file.className, license });
-              return license;
-            });
+  let licensesPromise = Promise.map(filesList, function (file) {
+    // The interface between fetching class origin and getting its license is
+    // actually not very well thought through. Point of improvement!
 
-          return { status: 'pending' };
-        })
-        .then(function (license) {
-          return { path: file.filePath, 'class': file.className, license: license };
-        });
-    }, { concurrency: apiConfig.concurrency });
-    
-    return licensesPromise;
-  }
+    return cache
+      .fetch(file.className)
+      .catch(function () { //cache miss
+        let docPromise = apiHandler
+          .fetch(file.className)
+          .then(licenseExtractor.extractByRepoPath)
+          .then(function (license) {
+            let doc = { path: file.filePath, className: file.className, license };
+            return cache.put(doc);
+          });
+
+        // return { status: 'pending' }; // Not RESTful
+        return docPromise;
+      });
+  }, { concurrency: apiConfig.concurrency });
+
+  return licensesPromise;
 }
 
 module.exports = router;
