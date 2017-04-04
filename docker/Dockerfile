@@ -19,7 +19,7 @@ RUN git clone --branch=$TAG --depth=1 https://github.com/afoninv/license-checker
 WORKDIR /opt/codifiedsecurity/license-checker
 RUN npm install
 # Workaround until we have working frontend build system
-COPY ["./node_modules/react-dropzone/dist/index.js", "./public/javascripts/"]
+RUN ["cp", "/opt/codifiedsecurity/license-checker/node_modules/react-dropzone/dist/index.js", "/opt/codifiedsecurity/license-checker/public/javascripts/react-dropzone.js"]
 ENTRYPOINT ["npm", "start"]
 
 EXPOSE 3000
