@@ -35,6 +35,11 @@ function extractByRepoPath (repoPathFull) {
     let licenseLink = $('.snapshot-info-entry>span').filter(function (i, el) {
       return $(el).text().search(/license/i) !== -1;
     }).next('a');
+
+    if (!licenseLink.length) {
+      return null;
+    }
+
     let license = { name: licenseLink.text(), url: licenseLink.attr('href') };
 
     return license;

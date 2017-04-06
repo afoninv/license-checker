@@ -6,6 +6,110 @@ class FilesArea extends React.Component {
   }
 }
 
+class DebugData extends React.Component {
+
+  renderRows() {
+    let rows = this.props.data.map((package_, idx) => {
+      if (!package_ || !package_['package']) {
+        return (
+          <tr key={idx}>
+            <td key={0}>
+              <span>
+                <strong>{ package_.packageIdentificationMethod }</strong> doesn't know what package it is
+              </span>
+            </td>
+            { columns }
+          </tr>
+        );
+      }
+
+      let columns = (package_.licenses || []).map((license_, idx2) => {
+        let { license, licenseIdentificationMethod } = license_;
+
+        if (!license) {
+          return (
+            <td key={idx2 + 1}>
+              <span>
+                <strong>{ licenseIdentificationMethod }</strong> doesn't know what license it is
+              </span>
+            </td>
+          );
+        }
+
+        return (
+          <td key={idx2 + 1}>
+            <span>
+              <strong>{ licenseIdentificationMethod }</strong> thinks it's
+            </span>
+            <br />
+            <br />
+            <span>
+              { license.url ? (
+                <a href={license.url} target='_blank'>{license.name || license.url}</a>
+              ) : (
+                license.name || 'N/A'
+              )}
+            </span>
+          </td>
+        );
+      });
+
+      let { groupId, artifactId, version } = package_['package'];
+
+      return (
+        <tr key={idx}>
+          <td key={0}>
+            <span>
+              <strong>{ package_.packageIdentificationMethod }</strong> <a href={package_.source.viewUrl}>thinks</a> it's
+            </span>
+            <br />
+            <br />
+            <span>
+              <dl>
+                <dt>groupId</dt>
+                <dd>{ groupId }</dd>
+              </dl>
+              <dl>
+                <dt>artifactId</dt>
+                <dd>{ artifactId }</dd>
+              </dl>
+              <dl>
+                <dt>version</dt>
+                <dd>{ version }</dd>
+              </dl>
+            </span>
+          </td>
+          { columns }
+        </tr>
+      );
+    });
+
+    return rows;
+  }
+
+  render() {
+    if (!this.props.data) {
+      return null;
+    }
+
+    let rows = this.renderRows();
+
+    return (
+      <table className='debug-data'>
+        <thead>
+          <tr>
+            <th><h4>Package</h4></th>
+            <th colSpan="2"><h4>Licenses</h4></th>
+          </tr>
+        </thead>
+        <tbody>
+          { rows }
+        </tbody>
+      </table>
+    );
+  }
+}
+
 class Licenses extends React.Component {
 
   renderRows() {
@@ -16,13 +120,16 @@ class Licenses extends React.Component {
             {file.path}
           </div>
           <div className='col-md-6'>
-            {file.license.status === 'pending' ? (
-              <span>Pending...</span>
-            ) : file.license.url ? (
-              <a href={file.license.url}>{file.license.name || file.license.url}</a>
-            ) : (
-              <span>{file.license.name || 'N/A'}</span>
-            )}
+            <span>
+              {!file.license ? (
+                'N/A'
+              ) : file.license.url ? (
+                <a href={file.license.url} target='_blank'>{file.license.name || file.license.url}</a>
+              ) : (
+                file.license.name || 'N/A'
+              )}
+            </span>
+            <DebugData data={file._packages} />
           </div>
         </div>
       );

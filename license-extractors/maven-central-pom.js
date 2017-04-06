@@ -44,7 +44,7 @@ function fetchLicense (groupId, artifactId, version, repoPath) {
         license = Object.assign({ all: licenses }, license); // to prevent circular reference
       }
 
-      return license;
+      return license || null;
     });
   });
 
