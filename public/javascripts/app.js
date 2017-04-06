@@ -18,10 +18,10 @@ class Licenses extends React.Component {
           <div className='col-md-6'>
             {file.license.status === 'pending' ? (
               <span>Pending...</span>
-            ) : file.license.link ? (
-              <a href={file.license.link}>{file.license.title || file.license.link}</a>
+            ) : file.license.url ? (
+              <a href={file.license.url}>{file.license.name || file.license.url}</a>
             ) : (
-              <span>{file.license.title || 'N/A'}</span>
+              <span>{file.license.name || 'N/A'}</span>
             )}
           </div>
         </div>

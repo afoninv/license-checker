@@ -7,7 +7,9 @@ let packageIdApiHandlers = require('../package-identificators');
 let licenseIdApiHandlers = require('../license-extractors');
 
 const config = {
-  concurrency: 8
+  concurrency: 8,
+  defaultIdentifyMethod: 'grepcode',
+  defaultGetLicenseMethod: 'grepcode'
 };
 
 
@@ -18,13 +20,18 @@ const config = {
 router.post('/', function(req, res, next) {
   // TODO id methods; 'all' method
 
+  let DEBUG = (req.headers.referer && req.headers.referer.indexOf('debug') > req.headers.referer.indexOf('?'));
+  if (DEBUG) {
+    console.warn('DEBUG is on');
+  }
+
   let filePaths = req.body;
   let filesList = normalizeFilePaths(filePaths);
 
   let licensesPromise = Promise.map(filesList, function (file) {
     let { className } = file;
 
-    let classPackagePromise = identifyPackage(className, 'mavenCentral'); // TODO id method hardcoded
+    let classPackagePromise = identifyPackage(className, config.defaultIdentifyMethod);
 
     let licensePromise = classPackagePromise.then(function (classPackageData) {
       let packageCoords = classPackageData['package'];
@@ -33,7 +40,7 @@ router.post('/', function(req, res, next) {
         return null;
       }
 
-      return getPackageLicense(packageCoords, 'grepcode') //TODO id method hardcoded
+      return getPackageLicense(packageCoords, config.defaultGetLicenseMethod)
         .then(function constructResult (packageLicenseData) {
           return {
             className,

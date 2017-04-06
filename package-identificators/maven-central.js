@@ -30,7 +30,7 @@ function fetchClass (className) {
   let searchUrl = config.searchClassUrl + className;
   let viewUrl = config.viewClassUrl + className;
 
-  // NB when Maven Central fails to find by class, it gives no results
+  // NB when Maven Central fails to find by exact class, it gives no results (= no guesses)
   let responsePromise = request(searchUrl, { json: true })
     .then(function parseJsonForPackageData (apiResponse) {
       let result = {

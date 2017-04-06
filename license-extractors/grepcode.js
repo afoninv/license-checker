@@ -29,16 +29,13 @@ function extractByRepoPath (repoPathFull) {
     return null;
   }
 
-  let licensePromise = request({
-    method: 'GET',
-    uri: repoPathFull
-  }).then(function (body) {
+  let licensePromise = request(repoPathFull).then(function parseHtmlForLicenseData (body) {
 
     let $ = cheerio.load(body);
     let licenseLink = $('.snapshot-info-entry>span').filter(function (i, el) {
       return $(el).text().search(/license/i) !== -1;
     }).next('a');
-    let license = { title: licenseLink.text(), link: licenseLink.attr('href') };
+    let license = { name: licenseLink.text(), url: licenseLink.attr('href') };
 
     return license;
   });
