@@ -55,8 +55,15 @@ router.post('/', function(req, res, next) {
 
   }, { concurrency: config.concurrency });
 
-  licensesPromise.then(function (licenses) {
-    res.json(licenses);
+  licensesPromise.then(function (classesLicenseData) {
+    if (DEBUG) {
+      let fullDataPromise = getFullData(classesLicenseData);
+      return fullDataPromise.then(function (classesLicenseData) {
+        res.json(classesLicenseData)
+      });
+    } else {
+      res.json(classesLicenseData);
+    }
   });
 
 });
@@ -180,4 +187,53 @@ function getPackageLicense(packageCoords, licenseIdentificationMethod) {
     });
 
   return licenseInCachePromise;
+}
+
+function getFullData(classesLicenseData) {
+  return Promise.map(classesLicenseData, function (classLicenseData) {
+
+    let { className } = classLicenseData;
+
+    let classPackagesPromise = Promise.map(Object.keys(packageIdApiHandlers), function (packageIdApiHandler) {
+      let packagePromise = identifyPackage(className, packageIdApiHandler);
+
+      packagePromise.then(function (classPackageData) {
+
+        let allLicensesPromise = Promise.map(Object.keys(licenseIdApiHandlers), function (licenseIdApiHandler) {
+          let packageCoords = classPackageData['package'];
+
+          if (packageCoords === null) {
+            return null;
+          }
+
+          return getPackageLicense(packageCoords, licenseIdApiHandler)
+            .then(function constructResult (packageLicenseData) {
+              return {
+                license: packageLicenseData.license,
+                method: licenseIdApiHandler
+              };
+            });
+        });
+
+        return allLicensesPromise.then(function (licenses) {console.log('===');console.log(licenses);
+          return {
+            'package': classPackageData['package'],
+            source: classPackageData.source,
+            method: packageIdApiHandler,
+            licenses: licenses.map(function (l) {
+              return l.license;
+            })
+          };
+        });
+      });
+      
+      return packagePromise;
+
+    });
+    
+    return classPackagesPromise.then(function (packages) {console.log('===');console.log(packages);
+        classLicenseData._packages = packages;
+        return classLicenseData;
+      });
+  });
 }
