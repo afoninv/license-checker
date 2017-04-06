@@ -6,7 +6,8 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
 var index = require('./routes/index');
-var filenames = require('./routes/filenames');
+//var filenames = require('./routes/filenames');
+var filenames = require('./routes/filenames-test');
 var apkUpload = require('./routes/apk-upload');
 
 var app = express();

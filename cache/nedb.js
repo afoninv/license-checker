@@ -2,14 +2,14 @@ let Promise = require('bluebird');
 let Datastore = require('nedb');
 let db = new Datastore({ filename: './cache/nedb.db', autoload: true });
 
-db.remove({}, { multi: true }); // Clean on app launch, for test purposes! TODO
+//db.remove({}, { multi: true }); // Clean on app launch, for test purposes! TODO
 
 let asyncFindOne = Promise.promisify(db.findOne, { context: db });
 let asyncInsert = Promise.promisify(db.insert, { context: db });
 
 let service = {
-  fetch: function (className) {
-    let cachePromise = asyncFindOne({ className })
+  fetch: function (searchObj) {
+    let cachePromise = asyncFindOne(searchObj)
       .then(function (doc) {
         if (doc == null) {
           return Promise.reject('not found');

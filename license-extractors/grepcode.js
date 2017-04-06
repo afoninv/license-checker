@@ -1,21 +1,37 @@
 let request = require('request-promise');
 let cheerio = require('cheerio');
 
-let grepcode = { title: 'grepcode.com' };
-
 const settings = {
   fetchUri: 'http://grepcode.com/snapshot'
 };
 
-grepcode.extractByRepoPath = function (repoPath) {
 
-  if (!repoPath) {
-    return {};
+//
+// API
+//
+
+let grepcode = {
+  title: 'grepcode.com',
+  extractByRepoPath, //TODO deprecated
+  fetchLicense
+};
+
+module.exports = grepcode;
+
+
+//
+// Function definitions
+//
+
+function extractByRepoPath (repoPathFull) {
+  // TODO error handling
+  if (!repoPathFull) {
+    return null;
   }
 
   let licensePromise = request({
     method: 'GET',
-    uri: settings.fetchUri + repoPath
+    uri: repoPathFull
   }).then(function (body) {
 
     let $ = cheerio.load(body);
@@ -30,4 +46,8 @@ grepcode.extractByRepoPath = function (repoPath) {
   return licensePromise;
 }
 
-module.exports = grepcode;
+function fetchLicense (groupId, artifactId, version, repoPath) {
+  let repoPathFull = `${settings.fetchUri}/${repoPath}/${groupId}/${artifactId}/${version}`;
+
+  return extractByRepoPath(repoPathFull);
+}

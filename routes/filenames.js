@@ -67,7 +67,7 @@ function fetchLicenses (filesList) {
     // actually not very well thought through. Point of improvement!
 
     return cache
-      .fetch(file.className)
+      .fetch({ className: file.className })
       .catch(function () { //cache miss
         let docPromise = apiHandler
           .fetch(file.className)

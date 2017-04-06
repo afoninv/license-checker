@@ -1,3 +1,5 @@
+// TODO API is incorrect now. Left for reference / future refactoring
+
 let request = require('request-promise');
 
 let help4j = { title: 'help4j.com' };
