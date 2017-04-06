@@ -24,7 +24,7 @@ router.post('/', function(req, res, next) {
   let licensesPromise = Promise.map(filesList, function (file) {
     let { className } = file;
 
-    let classPackagePromise = identifyPackage(className, 'grepcode'); // TODO id method hardcoded
+    let classPackagePromise = identifyPackage(className, 'mavenCentral'); // TODO id method hardcoded
 
     let licensePromise = classPackagePromise.then(function (classPackageData) {
       let packageCoords = classPackageData['package'];

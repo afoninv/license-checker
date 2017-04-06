@@ -1,6 +1,5 @@
 let request = require('request-promise');
 let cheerio = require('cheerio');
-let Promise = require('bluebird');
 
 
 const config = {
@@ -29,10 +28,10 @@ module.exports = grepcode;
 
 function fetchClass(className) {
 
-  let url = config.searchTypeUrl + className;
+  let searchUrl = config.searchTypeUrl + className;
 
-  let responsePromise = request(url)
-    .then(function (page) {
+  let responsePromise = request(searchUrl)
+    .then(function parseHtmlForPackageData (page) {
 
       let $ = cheerio.load(page);
       let $searchResults = $('.search-result');
@@ -41,8 +40,8 @@ function fetchClass(className) {
         source: {
           reasoning: 'classExact',
           confidence: 100,
-          searchUrl: url,
-          viewUrl: url
+          searchUrl,
+          viewUrl: searchUrl
         }
       };
 

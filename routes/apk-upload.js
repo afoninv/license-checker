@@ -22,7 +22,7 @@ router.post('/', function(req, res, next) {
         return res.json({ error: 'Unexpected response from scan' });
       }
   
-      let resultConnection = requestP(`https://api.codifiedsecurity.com/scans/${id}?apiKey=${config.apiKey}`)
+      let resultConnection = requestP(`https://api.codifiedsecurity.com/scans/${id}?apiKey=${config.apiKey}`) // TODO json: true
         .then(function (scanResultsRaw) {
           let scanResults = JSON.parse(scanResultsRaw);
           let memo = {};
