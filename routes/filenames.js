@@ -92,8 +92,8 @@ function normalizeFilePaths (filePaths) {
     throw new Error('List contains duplicates');
   }
 
-  let pathRegex = /^[a-z]+\/[a-z\/]+\.java$/i;
-  let classNameRegex = /^[a-z]+\.[a-z\.]+[a-z]$/i
+  let pathRegex = /^[a-z0-9]+\/[a-z0-9\/]+\.java$/i;
+  let classNameRegex = /^[a-z0-9]+\.[a-z0-9\.]+[a-z0-9]$/i;
 
   let filesList = filePaths.map(function (filePath) {
 

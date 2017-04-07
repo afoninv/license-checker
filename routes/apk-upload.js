@@ -23,7 +23,7 @@ router.post('/', function(req, res, next) {
       }
   
       let resultConnection = requestP({
-        uri: `https://api.codifiedsecurity.com/scans/${id}?apiKey=${config.apiKey}`
+        uri: `https://api.codifiedsecurity.com/scans/${id}?apiKey=${config.apiKey}`,
         json: true
       }).then(function (scanResults) {
         let memo = {};
