@@ -6,7 +6,7 @@
     "start": "nodejs ./bin/www",
     "pretest": "PORT=3009 nodejs ./bin/www tag_test_server &",
     "test": "sleep 5 && nodejs ./node_modules/.bin/mocha",
-    "posttest": "pkill -f 'tag_test_server'"
+    "posttest": "killall -SIGINT 'tag_test_server'"
   },
   "dependencies": {
     "bluebird": "~3.5.0",
