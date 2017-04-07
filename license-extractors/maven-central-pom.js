@@ -5,7 +5,7 @@ let Promise = require('bluebird');
 const settings = {
   fetchUri: 'http://search.maven.org/remotecontent?filepath='
 };
-//http://search.maven.org/remotecontent?filepath=org/osgi/org.amdatu.remote.topology.promiscuous/0.1.2/org.amdatu.remote.topology.promiscuous-0.1.2.pom TODO
+
 
 //
 // API

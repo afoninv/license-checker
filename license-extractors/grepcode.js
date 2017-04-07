@@ -12,7 +12,6 @@ const settings = {
 
 let grepcode = {
   title: 'grepcode.com',
-  extractByRepoPath, //TODO deprecated
   fetchLicense
 };
 
@@ -23,8 +22,9 @@ module.exports = grepcode;
 // Function definitions
 //
 
-function extractByRepoPath (repoPathFull) {
-  // TODO error handling
+function fetchLicense (groupId, artifactId, version, repoPath) {
+  let repoPathFull = `${settings.fetchUri}/${repoPath}/${groupId}/${artifactId}/${version}`;
+
   if (!repoPathFull) {
     return null;
   }
@@ -46,10 +46,4 @@ function extractByRepoPath (repoPathFull) {
   });
 
   return licensePromise;
-}
-
-function fetchLicense (groupId, artifactId, version, repoPath) {
-  let repoPathFull = `${settings.fetchUri}/${repoPath}/${groupId}/${artifactId}/${version}`;
-
-  return extractByRepoPath(repoPathFull);
 }

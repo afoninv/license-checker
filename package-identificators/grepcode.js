@@ -47,7 +47,6 @@ function fetchClass(className) {
 
       if ($searchResults.find('.no-results').length) {
         console.log('No results for class ' + className + ' on grepcode');
-        console.log(url);
         return false;
       };
 
@@ -56,7 +55,6 @@ function fetchClass(className) {
         let $item = $(itemEl);
         if ($item.find('.entity-name').text() === className) {
 
-          console.log('Found exact match for class ' + className);
           let $artifacts = $item.find('.container-group, .container-group-hidden'); // including container-group-hidden
 
           $artifacts.each(function (idx, artifactEl) {
@@ -69,13 +67,13 @@ function fetchClass(className) {
             let artifactId = $label.text().trim();
             let groupId;
             let repoPath;
-            console.log('found artifact id ' + artifactId);
 
             let $versions = $artifact.find('.result-list>.container-name');
             $versions.each(function (idx, versionEl) {
               let $version = $(versionEl);
 
-              // Parse a href to extract data... not convenient, but it's something
+              // Parse a href to extract data about groupId, version and
+              // repoPath... not convenient, but it's something
               let version = $version.text();
               let hrefParts = $version.attr('href').split('/');
               let artifactIndex = hrefParts.indexOf(artifactId);
@@ -102,15 +100,19 @@ function fetchClass(className) {
 
             });
           });
-          console.log('Got results for class ' + className);
-          console.log(result);
+
           return false; //break
         };
 
       });
 
-      return (result.packages.length) ?
-        result : false;
+      if (result.packages.length) {
+        console.log('Got exact match for class ' + className);
+        return result;
+      } else {
+        console.log('Failed to get exact match for class ' + className);
+        return false;
+      };
     });
 
   return responsePromise;

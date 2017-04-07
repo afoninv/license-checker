@@ -18,7 +18,6 @@ const config = {
 //
 
 router.post('/', function(req, res, next) {
-  // TODO id methods; 'all' method
 
   let DEBUG = (req.headers.referer && req.headers.referer.indexOf('debug') > req.headers.referer.indexOf('?'));
   if (DEBUG) {
@@ -93,8 +92,14 @@ function normalizeFilePaths (filePaths) {
     throw new Error('List contains duplicates');
   }
 
+  let pathRegex = /^[a-z]+\/[a-z\/]+\.java$/i;
+  let classNameRegex = /^[a-z]+\.[a-z\.]+[a-z]$/i
+
   let filesList = filePaths.map(function (filePath) {
-    if (!filePath || typeof filePath !== 'string') {
+
+    if (!filePath ||
+        typeof filePath !== 'string' ||
+        (!pathRegex.test(filePath) && !classNameRegex.test(filePath) )) {
       throw new Error('List contains invalid value: ' + filePath);
     }
 

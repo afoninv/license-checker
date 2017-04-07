@@ -22,17 +22,18 @@ router.post('/', function(req, res, next) {
         return res.json({ error: 'Unexpected response from scan' });
       }
   
-      let resultConnection = requestP(`https://api.codifiedsecurity.com/scans/${id}?apiKey=${config.apiKey}`) // TODO json: true
-        .then(function (scanResultsRaw) {
-          let scanResults = JSON.parse(scanResultsRaw);
-          let memo = {};
-          findClasses(scanResults, memo);
-          let filesList = Object.keys(memo);
-          res.json(filesList);
-        })
-        .catch(function (err) {
-          res.json(err);
-        });
+      let resultConnection = requestP({
+        uri: `https://api.codifiedsecurity.com/scans/${id}?apiKey=${config.apiKey}`
+        json: true
+      }).then(function (scanResults) {
+        let memo = {};
+        findClasses(scanResults, memo);
+        let filesList = Object.keys(memo);
+        res.json(filesList);
+      })
+      .catch(function (err) {
+        res.json(err);
+      });
 
   });
 
@@ -41,6 +42,9 @@ router.post('/', function(req, res, next) {
 });
 
 function findClasses (obj, memo) {
+  // Recursively parses object looking for 'classes' property, which is an array
+  // of objects with 'class' property that is a string. Collects such strings.
+
   if (!obj) {
     return;
   }

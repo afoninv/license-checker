@@ -64,10 +64,13 @@ function fetchClass (className) {
           return !!package_;
         });
 
-      console.log('Got results for class ' + className);
-      console.log(result);
-      return (result.packages.length) ?
-        result : false;
+      if (result.packages.length) {
+        console.log('Got exact match for class ' + className);
+        return result;
+      } else {
+        console.log('Failed to get exact match for class ' + className);
+        return false;
+      };
     })
 
   return responsePromise;
