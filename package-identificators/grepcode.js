@@ -15,8 +15,7 @@ const config = {
 
 let grepcode = {
   title: 'grepcode.com',
-  fetchClass,
-  fetchPackage
+  fetchClass
 };
 
 module.exports = grepcode;
@@ -117,15 +116,4 @@ function fetchClass(className) {
 
   return responsePromise;
 
-};
-
-function fetchPackage(className) {
-  // TODO Function for getting package by part of class path
-
-  // split path
-  // call api (projects/types/methods?)
-  // see if exact match
-    // if yes - return packages { reasoning: 'packageExact' exact: [{PKG}]}  // packageParent1, packageChild1
-
-  return false;
 };

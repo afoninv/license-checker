@@ -60,7 +60,7 @@ class DebugData extends React.Component {
         <tr key={idx}>
           <td key={0}>
             <span>
-              <strong>{ package_.packageIdentificationMethod }</strong> <a href={package_.source.viewUrl}>thinks</a> it's
+              <strong>{ package_.packageIdentificationMethod }</strong> <a href={package_.source.viewUrl}>thinks</a> with {Math.round(package_.source.confidence)}% confidence it's
             </span>
             <br />
             <br />

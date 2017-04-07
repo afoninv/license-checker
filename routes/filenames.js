@@ -119,7 +119,7 @@ function selectPackage(packageData, className) {
     return false;
   }
 
-  if (packageData.packages.length && packageData.source.confidence >= 90) {
+  if (packageData.packages.length && packageData.source.confidence >= 50) {
     return {
       'package': packageData.packages[0],
       source: packageData.source
@@ -146,20 +146,8 @@ function identifyPackage(className, packageIdentificationMethod) {
   let packageInCachePromise = cache.fetch({ className, packageIdentificationMethod })
     .catch(function coldIdentifyPackage () { // cache miss
 
-      let packageFromIdentifierPromise = apiHandler.fetchClass(className)
+      let packageFromIdentifierPromise = apiHandler(className)
         .then(selectPackageWrapped)
-        /*      // NOT READY
-        .catch(function (reason) { // fetch by class failed to provide fitting package...
-
-          if (reason !== 'no fitting package') {
-            return Promise.reject(reason);
-          };
-
-          return apiHandler.fetchPackage(className)
-            .then(selectPackageWrapped);
-
-        })  // here we have promise of package or strategy rejection
-        */
         .catch(function handleUnidentifiedPackage (reason) {
 
           if (reason !== 'no fitting package') {
@@ -198,7 +186,7 @@ function getPackageLicense(packageCoords, licenseIdentificationMethod) {
   let licenseInCachePromise = cache.fetch({ groupId, artifactId, version, licenseIdentificationMethod })
     .catch(function coldGetPackageLicense () { // cache miss
 
-      let licenseFromIdentifierPromise = apiHandler.fetchLicense(groupId, artifactId, version, repoPath);
+      let licenseFromIdentifierPromise = apiHandler(groupId, artifactId, version, repoPath);
 
       return licenseFromIdentifierPromise.then(function putInCache (identifiedLicense) {
         return cache.put({
