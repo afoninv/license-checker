@@ -10,7 +10,7 @@ should.Assertion.add('oneLicenseResponse', function() {
 
 describe('List API', function() {
   this.timeout(10000);
-  let url = 'http://localhost:3000';
+  let url = 'http://localhost:3009';
 
   describe('org/apache/commons/collections4/map/ListOrderedMap.java', function() {
     it('should return JSON array of 1 document with license field like \'Apache 2\'', function(done) {
