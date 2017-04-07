@@ -9,7 +9,7 @@ should.Assertion.add('oneLicenseResponse', function() {
 });
 
 describe('List API', function() {
-  this.timeout(10000);
+  this.timeout(20000);
   let url = 'http://localhost:3009';
 
   describe('org/apache/commons/collections4/map/ListOrderedMap.java', function() {

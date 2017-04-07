@@ -1,12 +1,12 @@
 {
   "name": "license-status",
-  "version": "0.3.5",
+  "version": "0.3.6",
   "private": true,
   "scripts": {
     "start": "nodejs ./bin/www",
     "pretest": "PORT=3009 nodejs ./bin/www tag_test_server &",
     "test": "sleep 5 && nodejs ./node_modules/.bin/mocha",
-    "posttest": "killall -SIGINT 'tag_test_server'"
+    "posttest": "pkill -f tag_test_server"
   },
   "dependencies": {
     "bluebird": "~3.5.0",
