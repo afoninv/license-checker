@@ -3,11 +3,12 @@ let router = express.Router();
 
 let Promise = require('bluebird');
 let cache = require('../cache/nedb');
+let argv = require('yargs').argv;
 let packageIdApiHandlers = require('../package-identificators');
 let licenseIdApiHandlers = require('../license-extractors');
 
 const config = {
-  concurrency: 8,
+  concurrency: argv.concurrency || 8,
   defaultIdentifyMethod: 'grepcode',
   defaultGetLicenseMethod: 'grepcode'
 };
