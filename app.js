@@ -31,6 +31,7 @@ if (logLevel) {
     console.warn(`Unknown/unsupported log level '${logLevel}' for --debug-request - setting to 'info' instead`);
     logLevel = 'info';
   };
+  console.log('Debug request log level ' + logLevel);
 
   let globalLog = require('./log/global-request-logger-with-timing');
   globalLog.initialize();

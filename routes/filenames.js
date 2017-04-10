@@ -7,8 +7,10 @@ let argv = require('yargs').argv;
 let packageIdApiHandlers = require('../package-identificators');
 let licenseIdApiHandlers = require('../license-extractors');
 
+let concurrency = +argv.concurrency || +argv.c || 8;
+console.log('Concurrency ' + concurrency);
 const config = {
-  concurrency: argv.concurrency || 8,
+  concurrency,
   defaultIdentifyMethod: 'grepcode',
   defaultGetLicenseMethod: 'grepcode'
 };
@@ -247,7 +249,7 @@ function getFullData(classesLicenseData) {
                 licenseIdentificationMethod: licenseIdApiHandler
               };
             });
-        }).then(function (licenses) {
+        }, { concurrency: config.concurrency }).then(function (licenses) {
           return {
             'package': classPackageData['package'],
             source: classPackageData.source,
@@ -256,9 +258,9 @@ function getFullData(classesLicenseData) {
           };
         });
       });
-    }).then(function (packages) {
+    }, { concurrency: config.concurrency }).then(function (packages) {
       classLicenseData._packages = packages;
       return classLicenseData;
     });
-  });
+  }, { concurrency: config.concurrency });
 }
