@@ -27,7 +27,7 @@ process.title = argv.title || process.title;
 
 let logLevel = argv['debug-request'];
 if (logLevel) {
-  if (!(logLevel in ['debug', 'info'])) {
+  if (['debug', 'info'].indexOf(logLevel) === -1) {
     console.warn(`Unknown/unsupported log level ${logLevel} for --debug-request - setting to 'info' instead`);
     logLevel = 'info';
   };
