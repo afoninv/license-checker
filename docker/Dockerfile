@@ -22,5 +22,5 @@ RUN npm install
 RUN ["cp", "/opt/codifiedsecurity/license-checker/node_modules/react-dropzone/dist/index.js", "/opt/codifiedsecurity/license-checker/public/javascripts/react-dropzone.js"]
 RUN ["/bin/bash", "-c", "npm test"]
 
-ENTRYPOINT ["npm", "start" "--"]
+ENTRYPOINT ["npm", "start", "--"]
 EXPOSE 3000
