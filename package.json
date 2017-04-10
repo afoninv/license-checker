@@ -1,10 +1,10 @@
 {
   "name": "license-status",
-  "version": "0.3.6",
+  "version": "0.3.7",
   "private": true,
   "scripts": {
     "start": "nodejs ./bin/www",
-    "pretest": "PORT=3009 nodejs ./bin/www tag_test_server &",
+    "pretest": "PORT=3009 nodejs ./bin/www --title=tag_test_server &",
     "test": "sleep 5 && nodejs ./node_modules/.bin/mocha",
     "posttest": "pkill -f tag_test_server"
   },
@@ -23,7 +23,9 @@
     "request": "~2.80.0",
     "request-promise": "~4.1.1",
     "serve-favicon": "~2.3.2",
-    "xml2js": "~0.4.17"
+    "winston": "~2.3.1",
+    "xml2js": "~0.4.17",
+    "yargs": "~7.0.2"
   },
   "devDependencies": {
     "mocha": "~3.2.0",

@@ -165,6 +165,15 @@ function identifyPackage(className, packageIdentificationMethod) {
           'package': identifiedPackage['package'],
           source: identifiedPackage.source
         });
+      }).catch(function (reason) {
+        // Handle http errors
+        if (typeof(reason) === 'object' &&
+            reason.name === 'StatusCodeError' ||
+            reason.name === 'RequestError' ) {
+          return { 'package': null, source: undefined }; // TODO here's code duplication... types are not defined
+        }
+console.log(reason)
+        return Promise.reject(reason);
       });
 
     });
@@ -196,7 +205,17 @@ function getPackageLicense(packageCoords, licenseIdentificationMethod) {
           licenseIdentificationMethod,
           license: identifiedLicense
         });
+      }).catch(function (reason) {
+        // Handle http errors
+        if (typeof(reason) === 'object' &&
+            reason.name === 'StatusCodeError' ||
+            reason.name === 'RequestError' ) {
+          return null; // TODO here's code duplication... types are not defined
+        }
+
+        return Promise.reject(reason);
       });
+
     });
 
   return licenseInCachePromise;

@@ -4,6 +4,7 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var argv = require('yargs').argv;
 
 var index = require('./routes/index');
 var filenames = require('./routes/filenames');
@@ -12,7 +13,62 @@ var apkUpload = require('./routes/apk-upload');
 var app = express();
 
 //TESTS
-process.title = process.argv[2];
+
+// For killing test server by process name.
+//    npm start -- --title=my_title
+process.title = argv.title || process.title;
+
+
+//DEBUG
+
+// You may write outbound requests data to log file by specifying command-line
+// option. 'info' level does not record response data, 'debug' level does.
+//    npm start -- --debug-request=info
+
+let logLevel = argv['debug-request'];
+if (logLevel) {
+  if (!(logLevel in ['debug', 'info'])) {
+    console.warn(`Unknown/unsupported log level ${logLevel} for --debug-request - setting to 'info' instead`);
+    logLevel = 'info';
+  };
+
+  let globalLog = require('./log/global-request-logger-with-timing');
+  globalLog.initialize();
+
+  let winston = require('winston');
+  let transports = [
+    new (winston.transports.File)({
+      name: 'info-file',
+      filename: 'filelog-info.log',
+      level: 'info'
+    })
+  ];
+  if (logLevel.toLowerCase() === 'debug') {
+    transports.push(new (winston.transports.File)({
+      name: 'debug-file',
+      filename: 'filelog-debug.log',
+      level: 'debug'
+    }))
+  };
+
+  let logger = new (winston.Logger)({ transports });
+
+  // Logging for http calls happens here.
+  globalLog.on('success', handleHttpLogEvent.bind('successful outgoing http call'));
+  globalLog.on('error', handleHttpLogEvent.bind('error in outgoing http call'));
+
+  function handleHttpLogEvent (request, response) {
+    let noResponseBody = Object.assign({}, response);
+    if (response && response.body) {
+      delete noResponseBody.body;
+    };
+
+    let message = String(this) || '';
+
+    logger.info(message, { request, response: noResponseBody });
+    logger.debug(message, { request, response });
+  }
+}
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
