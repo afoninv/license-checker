@@ -172,7 +172,7 @@ function identifyPackage(className, packageIdentificationMethod) {
             reason.name === 'RequestError' ) {
           return { 'package': null, source: undefined }; // TODO here's code duplication... types are not defined
         }
-console.log(reason)
+
         return Promise.reject(reason);
       });
 

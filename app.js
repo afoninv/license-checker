@@ -28,7 +28,7 @@ process.title = argv.title || process.title;
 let logLevel = argv['debug-request'];
 if (logLevel) {
   if (['debug', 'info'].indexOf(logLevel) === -1) {
-    console.warn(`Unknown/unsupported log level ${logLevel} for --debug-request - setting to 'info' instead`);
+    console.warn(`Unknown/unsupported log level '${logLevel}' for --debug-request - setting to 'info' instead`);
     logLevel = 'info';
   };
 
@@ -64,9 +64,11 @@ if (logLevel) {
     };
 
     let message = String(this) || '';
+    let timing = (request.timingStart && response.timingEnd) ?
+      response.timingEnd - request.timingStart : null;
 
-    logger.info(message, { request, response: noResponseBody });
-    logger.debug(message, { request, response });
+    logger.info(message, { request, response: noResponseBody, timing });
+    logger.debug(message, { request, response, timing });
   }
 }
 
