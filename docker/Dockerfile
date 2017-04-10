@@ -1,5 +1,5 @@
 FROM ubuntu:16.04
-LABEL Maintainer="Vitaly Afonin" Description="License checker backend, web-scraping based" Version="0.3.8"
+LABEL Maintainer="Vitaly Afonin" Description="License checker backend, web-scraping based"
 
 RUN mkdir -p /opt/codifiedsecurity
 WORKDIR /opt/codifiedsecurity
