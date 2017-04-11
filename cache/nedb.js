@@ -2,7 +2,7 @@ let Promise = require('bluebird');
 let Datastore = require('nedb');
 let db = new Datastore({ filename: './cache/nedb.db', autoload: true });
 
-//db.remove({ packageIdentificationMethod: 'mavenCentralGuess' }, { multi: true }); // Clean on app launch, for test purposes! TODO
+db.remove({}, { multi: true }); // Clean on app launch, for test purposes
 
 let asyncFindOne = Promise.promisify(db.findOne, { context: db });
 let asyncInsert = Promise.promisify(db.insert, { context: db });

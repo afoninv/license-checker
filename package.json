@@ -1,10 +1,10 @@
 {
   "name": "license-status",
-  "version": "0.3.9",
+  "version": "0.4.0",
   "private": true,
   "scripts": {
     "start": "nodejs ./bin/www",
-    "pretest": "PORT=3009 nodejs ./bin/www --title=tag_test_server &",
+    "pretest": "PORT=3009 nodejs ./bin/www --title=tag_test_server --cache=nedb &",
     "test": "sleep 5 && nodejs ./node_modules/.bin/mocha",
     "posttest": "pkill tag_test_server"
   },
@@ -19,6 +19,7 @@
     "less-middleware": "~2.2.0",
     "morgan": "~1.7.0",
     "nedb": "~1.8.0",
+    "pg": "~6.1.5",
     "react-dropzone": "~3.12.2",
     "request": "~2.80.0",
     "request-promise": "~4.1.1",

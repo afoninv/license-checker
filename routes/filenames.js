@@ -2,10 +2,17 @@ let express = require('express');
 let router = express.Router();
 
 let Promise = require('bluebird');
-let cache = require('../cache/nedb');
 let argv = require('yargs').argv;
 let packageIdApiHandlers = require('../package-identificators');
 let licenseIdApiHandlers = require('../license-extractors');
+
+let cacheBackend = argv['cache'] || 'postgres';
+if (['nedb', 'postgres'].indexOf(cacheBackend) === -1) {
+  console.warn(`Unknown/unsupported cache backend '${cacheBackend}' for --cache - setting to 'postgres' instead`);
+  cacheBackend = 'postgres';
+}
+console.log('Cache backend ' + cacheBackend);
+let cache = require('../cache/' + cacheBackend);
 
 let concurrency = +argv.concurrency || +argv.c || 8;
 console.log('Concurrency ' + concurrency);
